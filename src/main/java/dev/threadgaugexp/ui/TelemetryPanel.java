@@ -10,6 +10,7 @@ public class TelemetryPanel extends JPanel {
     private JLabel activeThreadsLabel;
     private JLabel heapUsedLabel;
     private JLabel heapMaxLabel;
+    private JLabel heapCommittedLabel;
     private JLabel cpuLoadLabel;
     private JProgressBar heapProgressBar;
     private JProgressBar cpuProgressBar;
@@ -21,9 +22,9 @@ public class TelemetryPanel extends JPanel {
     }
 
     private void initializeUI() {
-        setLayout(new GridBagLayout());
-        setBorder(createXPBorder("Live Telemetry"));
-        setBackground(new Color(215, 231, 255));
+    setLayout(new GridBagLayout());
+    setBorder(createXPBorder("Live Telemetry"));
+    setBackground(dev.threadgaugexp.util.XPStyleManager.getPanelBackground());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -32,52 +33,71 @@ public class TelemetryPanel extends JPanel {
 
         int row = 0;
 
-        // Active threads
+    // Active threads
         gbc.gridx = 0; gbc.gridy = row;
-        add(new JLabel("Active Threads:"), gbc);
+    JLabel activeLabel = new JLabel("Active Threads:");
+    activeLabel.setToolTipText("Numero approssimato di thread Java attivi nel processo.");
+    add(activeLabel, gbc);
         gbc.gridx = 1;
         activeThreadsLabel = createValueLabel();
+    activeThreadsLabel.setToolTipText("Conta approssimativa dei thread attivi nella JVM.");
         add(activeThreadsLabel, gbc);
         row++;
 
-        // Heap used
+    // Heap used
         gbc.gridx = 0; gbc.gridy = row;
         add(new JLabel("Heap Used:"), gbc);
         gbc.gridx = 1;
         heapUsedLabel = createValueLabel();
+    heapUsedLabel.setToolTipText("Memory currently used inside the Java heap of this JVM");
         add(heapUsedLabel, gbc);
         row++;
 
-        // Heap max
+    // Heap max
         gbc.gridx = 0; gbc.gridy = row;
         add(new JLabel("Heap Max:"), gbc);
         gbc.gridx = 1;
         heapMaxLabel = createValueLabel();
+    heapMaxLabel.setToolTipText("Maximum Java heap available to this JVM (not system RAM)");
         add(heapMaxLabel, gbc);
         row++;
 
-        // Heap progress bar
+    // Heap committed
+    gbc.gridx = 0; gbc.gridy = row;
+    add(new JLabel("Heap Committed:"), gbc);
+    gbc.gridx = 1;
+    heapCommittedLabel = createValueLabel();
+    heapCommittedLabel.setToolTipText("Heap attualmente allocata (committed) dalla JVM");
+    add(heapCommittedLabel, gbc);
+    row++;
+
+    // Heap progress bar
         gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
-        heapProgressBar = new JProgressBar(0, 100);
+    heapProgressBar = new JProgressBar(0, 100);
         heapProgressBar.setStringPainted(true);
-        heapProgressBar.setString("Heap: 0%");
+    heapProgressBar.setString("Heap: 0%");
+    heapProgressBar.setToolTipText("Heap usage percentage: used / max heap");
         add(heapProgressBar, gbc);
         row++;
 
         // CPU load
         gbc.gridwidth = 1;
         gbc.gridx = 0; gbc.gridy = row;
-        add(new JLabel("CPU Load:"), gbc);
+    JLabel cpuLabel = new JLabel("CPU Load:");
+    cpuLabel.setToolTipText("Carico CPU di sistema (stima), non solo della JVM.");
+    add(cpuLabel, gbc);
         gbc.gridx = 1;
         cpuLoadLabel = createValueLabel();
+    cpuLoadLabel.setToolTipText("Carico CPU in percentuale.");
         add(cpuLoadLabel, gbc);
         row++;
 
         // CPU progress bar
         gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
-        cpuProgressBar = new JProgressBar(0, 100);
+    cpuProgressBar = new JProgressBar(0, 100);
         cpuProgressBar.setStringPainted(true);
         cpuProgressBar.setString("CPU: 0%");
+    cpuProgressBar.setToolTipText("Carico CPU di sistema.");
         add(cpuProgressBar, gbc);
         row++;
     }
@@ -99,16 +119,19 @@ public class TelemetryPanel extends JPanel {
         activeThreadsLabel.setText(String.valueOf(threadCount));
 
         // Heap memory
-        Runtime runtime = Runtime.getRuntime();
-        long usedMemory = (runtime.totalMemory() - runtime.freeMemory()) / (1024 * 1024);
-        long maxMemory = runtime.maxMemory() / (1024 * 1024);
+    Runtime runtime = Runtime.getRuntime();
+    long committedMB = runtime.totalMemory() / (1024 * 1024);
+    long usedMB = (runtime.totalMemory() - runtime.freeMemory()) / (1024 * 1024);
+    long maxMB = runtime.maxMemory() / (1024 * 1024);
         
-        heapUsedLabel.setText(usedMemory + " MB");
-        heapMaxLabel.setText(maxMemory + " MB");
+    heapUsedLabel.setText(usedMB + " MB");
+    heapMaxLabel.setText(maxMB + " MB");
+    heapCommittedLabel.setText(committedMB + " MB");
         
-        int heapPercent = (int) ((usedMemory * 100) / maxMemory);
+    int heapPercent = maxMB > 0 ? (int) ((usedMB * 100) / maxMB) : 0;
+    int usedOfCommitted = committedMB > 0 ? (int) ((usedMB * 100) / committedMB) : 0;
         heapProgressBar.setValue(heapPercent);
-        heapProgressBar.setString("Heap: " + heapPercent + "%");
+    heapProgressBar.setString("Heap: " + heapPercent + "% (" + usedOfCommitted + "% of committed)");
         
         // Set color based on usage
         if (heapPercent > 80) {
@@ -159,11 +182,11 @@ public class TelemetryPanel extends JPanel {
 
     private TitledBorder createXPBorder(String title) {
         TitledBorder border = BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(new Color(167, 199, 255), 2),
+            BorderFactory.createLineBorder(dev.threadgaugexp.util.XPStyleManager.getBorderColor(), 2),
             title
         );
         border.setTitleFont(new Font("Tahoma", Font.BOLD, 11));
-        border.setTitleColor(new Color(0, 51, 153));
+        border.setTitleColor(dev.threadgaugexp.util.XPStyleManager.getTitleColor());
         return border;
     }
 }

@@ -5,6 +5,8 @@ import dev.threadgaugexp.util.XPStyleManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MainWindow extends JFrame {
     private SystemInfoPanel systemInfoPanel;
@@ -22,12 +24,16 @@ public class MainWindow extends JFrame {
         // Apply XP style
         XPStyleManager.applyXPStyle();
 
+    // Tooltips appear only after hovering > 1.5 seconds (1500ms)
+    ToolTipManager.sharedInstance().setInitialDelay(1500);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
         setLocationRelativeTo(null);
 
         // Main layout
         setLayout(new BorderLayout(10, 10));
+        getContentPane().setBackground(XPStyleManager.getPanelBackground());
 
         // Top panel - System Info
         systemInfoPanel = new SystemInfoPanel();
@@ -58,10 +64,21 @@ public class MainWindow extends JFrame {
             BorderFactory.createEmptyBorder(3, 5, 3, 5)
         ));
         statusLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        statusLabel.setOpaque(true);
+        statusLabel.setBackground(XPStyleManager.getPanelBackground());
+        statusLabel.setForeground(UIManager.getColor("Label.foreground"));
         add(statusLabel, BorderLayout.SOUTH);
 
         // Add padding
         ((JPanel) getContentPane()).setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Ensure background timers/workers stop cleanly on close
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (telemetryPanel != null) telemetryPanel.stopTelemetry();
+            }
+        });
     }
 
     public OutputPanel getOutputPanel() {

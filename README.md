@@ -112,8 +112,8 @@ The project uses Gradle with the **Gradle Wrapper**, so you don't need Gradle pr
 # Clean and build
 ./gradlew clean build
 
-# Run tests (if any)
-./gradlew test
+# (Tests removed)
+No unit tests are shipped in this release build.
 
 # Create distribution
 ./gradlew jar
@@ -123,6 +123,15 @@ The compiled JAR will be located at:
 ```
 build/libs/ThreadGauge-XP.jar
 ```
+
+### UI tips and toggles
+
+- Tooltips: le descrizioni compaiono passando il mouse sopra un elemento per ~1.5 secondi.
+- System Java detection: l'app, per default, prova a mostrare la versione di `java -version` nel PATH (campo "System Java").
+   - Puoi disabilitarlo avviando con `-Dtgxp.detectSystemJava=false` oppure usando il pulsante "Restart (No System Java)" nei controlli.
+- JVM (App): la label mostra la versione della JVM che esegue l'app (può differire dalla System Java) e il tipo di VM (HotSpot/OpenJ9/GraalVM).
+- Dark Mode: disponibile. Puoi passare alla modalità scura con il pulsante "Restart (Dark Mode)" o avviando con `-Dtgxp.darkMode=true`.
+   - In dark mode: sfondi pannelli grigio scuro, testi bianchi, bordi/titoli arancioni; aree bianche diventano grigio.
 
 ### Manual Compilation (without Gradle)
 
@@ -151,7 +160,7 @@ java -jar build/libs/ThreadGauge-XP.jar
 ## 📱 User Interface Guide
 
 ### System Information Panel (Top)
-- Displays OS, JVM version, CPU cores, and memory stats
+- Displays OS, JVM (App) version + implementation (HotSpot/OpenJ9/GraalVM), CPU cores, physical RAM (total/free), and System Java (dal PATH, se abilitata)
 - Updates on startup
 
 ### Controls Panel (Middle Left)
@@ -163,8 +172,8 @@ java -jar build/libs/ThreadGauge-XP.jar
 - **Export Results**: Save test data to file
 
 ### Telemetry Panel (Middle Right)
-- **Active Threads**: Current thread count (updates every 500ms)
-- **Heap Used/Max**: Memory consumption with progress bar
+- **Active Threads**: Current approximate JVM thread count (updates every 500ms)
+- **Heap Used/Committed/Max**: JVM heap usage; progress shows used/max and used/committed
 - **CPU Load**: System CPU usage with visual indicator
 - Color-coded warnings (green → yellow → red based on usage)
 
@@ -453,7 +462,7 @@ java -Xmx4G -jar build/libs/ThreadGauge-XP.jar
 │ ThreadGauge XP - Thread Behavior Explorer                   │
 ├─────────────────────────────────────────────────────────────┤
 │ [System Information Panel]                                  │
-│  OS: Windows 11   JVM: Java 25   Cores: 8   RAM: 16384 MB  │
+│  OS: Windows 11   JVM: Java 21   Cores: 8   RAM: 16384 MB  │
 ├─────────────────────────────────────────────────────────────┤
 │ [Controls]              │ [Live Telemetry]                  │
 │  Stack Size: 512 KB     │  Active Threads: 342              │
@@ -488,7 +497,7 @@ Contributions are welcome! This is an educational tool, and improvements are enc
 ### Development Setup
 
 1. Fork and clone the repository
-2. Ensure Java 25 LTS is installed
+2. Ensure Java 21 LTS is installed
 3. Import into your IDE
 4. Make changes
 5. Test thoroughly on multiple platforms
@@ -537,7 +546,7 @@ SOFTWARE.
 ## 🙏 Acknowledgments
 
 - Inspired by classic Windows XP design language
-- Built with Java 25 LTS and Swing
+- Built with Java 21 LTS and Swing
 - Uses only standard JDK libraries (no external dependencies)
 
 ---
