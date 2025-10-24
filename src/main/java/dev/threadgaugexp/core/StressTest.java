@@ -156,11 +156,5 @@ public class StressTest extends SwingWorker<StressResult, String> {
         }
     }
 
-    public static class StressResult {
-        public int threadCount;
-        public int plannedDuration;
-        public double actualDuration;
-        public double averageCpuLoad;
-        public boolean cancelled;
-    }
+    
 }

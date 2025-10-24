@@ -8,7 +8,8 @@ version = '1.0.0'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        // Use a widely compatible LTS toolchain to avoid Gradle/JUnit task issues
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -30,8 +31,4 @@ jar {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }

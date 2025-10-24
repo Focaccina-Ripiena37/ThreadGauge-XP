@@ -160,10 +160,5 @@ public class ThreadTester extends SwingWorker<TestResult, String> {
         }
     }
 
-    public static class TestResult {
-        public int maxThreads;
-        public int stackSizeKB;
-        public long memoryPerThreadKB;
-        public String stopReason;
-    }
+    
 }

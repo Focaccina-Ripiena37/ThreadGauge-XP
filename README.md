@@ -2,7 +2,7 @@
 
 **A Java desktop application for exploring thread behavior and system limits with a classic Windows XP-style interface.**
 
-![Java](https://img.shields.io/badge/Java-25_LTS-orange)
+![Java](https://img.shields.io/badge/Java-21_LTS-orange)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 
@@ -10,7 +10,7 @@
 
 ## 📖 Overview
 
-ThreadGauge XP is a lightweight desktop application that helps developers and system administrators understand Java thread behavior, memory consumption, and system limits. Built with **Java 25 LTS** and **Swing**, it features a nostalgic Windows XP-inspired user interface while providing powerful thread analysis capabilities.
+ThreadGauge XP is a lightweight desktop application that helps developers and system administrators understand Java thread behavior, memory consumption, and system limits. Built with **Java 21 LTS** and **Swing**, it features a nostalgic Windows XP-inspired user interface while providing powerful thread analysis capabilities.
 
 ### Key Features
 
@@ -43,7 +43,7 @@ The app is designed for:
 
 ## 📋 Requirements
 
-- **Java Development Kit (JDK) 25 LTS** or later
+- **Java Development Kit (JDK) 21 LTS** or later
   - Download from: [Oracle JDK](https://www.oracle.com/java/technologies/downloads/) or [OpenJDK](https://jdk.java.net/25/)
 - **Operating System**: Windows, macOS, or Linux
 - **No additional dependencies** - uses only standard JDK libraries
@@ -54,10 +54,10 @@ The app is designed for:
 java -version
 ```
 
-Expected output should show Java 25 or higher:
+Expected output should show Java 21 or higher:
 ```
-java version "25" 2025-XX-XX
-Java(TM) SE Runtime Environment (build 25+XX)
+java version "21" 2023-09-19
+Java(TM) SE Runtime Environment (build 21+35)
 ```
 
 ---
@@ -71,11 +71,17 @@ Java(TM) SE Runtime Environment (build 25+XX)
 git clone https://github.com/Focaccina-Ripiena37/ThreadGauge-XP.git
 cd ThreadGauge-XP
 
+# Build
+.\gradlew.bat clean build
+
 # Build and run (Unix/macOS/Linux)
 ./gradlew run
 
 # Build and run (Windows)
-gradlew.bat run
+.\gradlew.bat run
+
+# Verify Java in use by Gradle (should resolve/download JDK 21 automatically)
+.\gradlew.bat -version
 ```
 
 ### Option 2: Build JAR and Run
@@ -91,7 +97,7 @@ java -jar build/libs/ThreadGauge-XP.jar
 ### Option 3: Run from IDE
 
 1. Import the project into your IDE (IntelliJ IDEA, Eclipse, VS Code)
-2. Ensure Java 25 toolchain is configured
+2. Ensure Java 21 toolchain is configured
 3. Run the main class: `dev.threadgaugexp.MainWindow`
 
 ---
@@ -128,7 +134,7 @@ mkdir -p build/classes
 
 # Compile all Java files
 javac -d build/classes \
-  --release 25 \
+   --release 21 \
   $(find src/main/java -name "*.java")
 
 # Create JAR with manifest
@@ -375,7 +381,7 @@ Uses `com.sun.management.OperatingSystemMXBean`:
 
 ### "Could not find or load main class"
 
-**Solution**: Ensure you're using Java 25+:
+**Solution**: Ensure you're using Java 21+:
 ```bash
 java -version
 ```
