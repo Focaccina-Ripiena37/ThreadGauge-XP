@@ -133,6 +133,14 @@ build/libs/ThreadGauge-XP.jar
 - Dark Mode: disponibile. Puoi passare alla modalità scura con il pulsante "Restart (Dark Mode)" o avviando con `-Dtgxp.darkMode=true`.
    - In dark mode: sfondi pannelli grigio scuro, testi bianchi, bordi/titoli arancioni; aree bianche diventano grigio.
 
+### App Icon
+
+- Posiziona il file icona in: `src/main/resources/icons/ico.png`
+   - Formato: PNG
+   - Dimensioni consigliate: 512×512 (va benissimo anche 500×500; l'app ridimensiona automaticamente)
+- L'app carica l'icona all'avvio e genera automaticamente più dimensioni comuni (16, 20, 24, 32, 40, 48, 64, 128, 256) per taskbar e finestra.
+- Se l'icona non è presente, l'app avvia comunque senza errori.
+
 ### Manual Compilation (without Gradle)
 
 If you prefer to compile manually:
