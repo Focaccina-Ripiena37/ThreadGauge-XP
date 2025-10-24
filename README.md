@@ -124,23 +124,6 @@ The compiled JAR will be located at:
 build/libs/ThreadGauge-XP.jar
 ```
 
-### UI tips and toggles
-
-- Tooltips: le descrizioni compaiono passando il mouse sopra un elemento per ~1.5 secondi.
-- System Java detection: l'app, per default, prova a mostrare la versione di `java -version` nel PATH (campo "System Java").
-   - Puoi disabilitarlo avviando con `-Dtgxp.detectSystemJava=false` oppure usando il pulsante "Restart (No System Java)" nei controlli.
-- JVM (App): la label mostra la versione della JVM che esegue l'app (può differire dalla System Java) e il tipo di VM (HotSpot/OpenJ9/GraalVM).
-- Dark Mode: disponibile. Puoi passare alla modalità scura con il pulsante "Restart (Dark Mode)" o avviando con `-Dtgxp.darkMode=true`.
-   - In dark mode: sfondi pannelli grigio scuro, testi bianchi, bordi/titoli arancioni; aree bianche diventano grigio.
-
-### App Icon
-
-- Posiziona il file icona in: `src/main/resources/icons/ico.png`
-   - Formato: PNG
-   - Dimensioni consigliate: 512×512 (va benissimo anche 500×500; l'app ridimensiona automaticamente)
-- L'app carica l'icona all'avvio e genera automaticamente più dimensioni comuni (16, 20, 24, 32, 40, 48, 64, 128, 256) per taskbar e finestra.
-- Se l'icona non è presente, l'app avvia comunque senza errori.
-
 ### Manual Compilation (without Gradle)
 
 If you prefer to compile manually:
@@ -295,76 +278,6 @@ Includes:
 
 ---
 
-## 🎨 Customization
-
-### Stack Size Effects
-
-Experiment with different stack sizes:
-- **128 KB**: Minimal, may cause `StackOverflowError` in deep recursion
-- **256 KB**: Conservative for simple threads
-- **512 KB**: Balanced (often JVM default)
-- **1 MB+**: Safe for complex call stacks
-
-### JVM Arguments
-
-Run with custom heap size:
-```bash
-java -Xmx4G -Xms1G -jar build/libs/ThreadGauge-XP.jar
-```
-
-Run with larger default stack:
-```bash
-java -Xss1M -jar build/libs/ThreadGauge-XP.jar
-```
-
-### Modifying Safety Caps
-
-Edit `src/main/java/dev/threadgaugexp/core/ThreadTester.java`:
-```java
-private static final int SAFETY_CAP = 50000;  // Change this value
-private static final long MIN_FREE_HEAP_MB = 50;  // Or this
-```
-
----
-
-## 🗂️ Project Structure
-
-```
-ThreadGauge-XP/
-├── src/
-│   └── main/
-│       ├── java/
-│       │   └── dev/
-│       │       └── threadgaugexp/
-│       │           ├── MainWindow.java          # Entry point
-│       │           ├── ui/
-│       │           │   ├── SystemInfoPanel.java  # Top info display
-│       │           │   ├── ControlsPanel.java    # Test controls
-│       │           │   ├── TelemetryPanel.java   # Live metrics
-│       │           │   └── OutputPanel.java      # Log display
-│       │           ├── core/
-│       │           │   ├── ThreadTester.java     # Max thread test
-│       │           │   ├── StressTest.java       # Load test
-│       │           │   └── MemoryEstimator.java  # Memory calc
-│       │           └── util/
-│       │               ├── XPStyleManager.java   # UI styling
-│       │               └── ExportUtil.java       # File export
-│       └── resources/
-├── gradle/
-│   └── wrapper/
-│       ├── gradle-wrapper.jar
-│       └── gradle-wrapper.properties
-├── build.gradle                      # Build configuration
-├── settings.gradle                   # Project settings
-├── gradlew                          # Unix wrapper script
-├── gradlew.bat                      # Windows wrapper script
-├── README.md                        # This file
-├── LICENSE                          # MIT License
-└── .gitignore                       # Git exclusions
-```
-
----
-
 ## 🔍 Technical Details
 
 ### Threading Model
@@ -394,103 +307,10 @@ Uses `com.sun.management.OperatingSystemMXBean`:
 
 ---
 
-## 🐛 Troubleshooting
-
-### "Could not find or load main class"
-
-**Solution**: Ensure you're using Java 21+:
-```bash
-java -version
-```
-
-### OutOfMemoryError on startup
-
-**Solution**: Increase heap size:
-```bash
-java -Xmx4G -jar build/libs/ThreadGauge-XP.jar
-```
-
-### Max thread count much lower than expected
-
-**Possible causes**:
-- Large stack size setting
-- Low system RAM
-- OS thread limits (Linux: check `ulimit -u`)
-- Low heap allocation
-
-**Solutions**:
-- Reduce stack size
-- Increase heap: `-Xmx8G`
-- Increase OS limits: `ulimit -u 100000`
-
-### UI looks different than XP style
-
-**Note**: Exact XP styling depends on your OS. The app uses system Look & Feel as a base, then applies XP-inspired colors and fonts. On non-Windows systems, the appearance may differ slightly.
-
-### "CPU Load: N/A"
-
-**Explanation**: `getCpuLoad()` may not be supported on all JVM implementations or platforms. This is expected behavior on some systems.
-
----
-
-## 📝 Notes on System Limits
-
-### Thread Capacity Factors
-
-1. **JVM Heap**: Each thread requires heap for its object
-2. **Native Memory**: Stack size allocated outside heap
-3. **OS Limits**:
-   - **Linux**: `ulimit -u` (max user processes)
-   - **Windows**: Typically 2000-4000 threads/process
-   - **macOS**: Varies, often 2000-8000 threads
-
-4. **Physical RAM**: Total available memory
-
-### Why Tests Stop
-
-- **Safety Cap**: 50,000 threads by default
-- **Low Heap**: < 50 MB free heap remaining
-- **OutOfMemoryError**: JVM heap exhausted
-- **User Cancellation**: Stop button pressed
-
-### Best Practices
-
-- Start with small thread counts (100-1000)
-- Increase stack size if you get `StackOverflowError`
-- Run tests with monitoring tools (jvisualvm, jconsole)
-- Don't create more threads than CPU cores for CPU-bound work
-
----
-
 ## 📸 Screenshots
 
 ### Main Window
-```
-┌─────────────────────────────────────────────────────────────┐
-│ ThreadGauge XP - Thread Behavior Explorer                   │
-├─────────────────────────────────────────────────────────────┤
-│ [System Information Panel]                                  │
-│  OS: Windows 11   JVM: Java 21   Cores: 8   RAM: 16384 MB  │
-├─────────────────────────────────────────────────────────────┤
-│ [Controls]              │ [Live Telemetry]                  │
-│  Stack Size: 512 KB     │  Active Threads: 342              │
-│  [Find Max Threads]     │  Heap: 1024 / 4096 MB [▓▓▓░░░]   │
-│                         │  CPU Load: 45% [▓▓▓▓▓░░░░░]      │
-│  Stress Threads: 100    │                                   │
-│  Duration: 10 sec       │                                   │
-│  [Run Stress Test]      │                                   │
-│  [Stop Test]            │                                   │
-│  [Export Results]       │                                   │
-├─────────────────────────────────────────────────────────────┤
-│ [Output Log]                                                │
-│  [12:34:56] ThreadGauge XP initialized                      │
-│  [12:35:12] Starting max thread test...                     │
-│  [12:35:45] Created 5000 threads so far...                  │
-│  [12:36:20] SUCCESS: Max threads reached: 12,340           │
-├─────────────────────────────────────────────────────────────┤
-│ Ready                                                        │
-└─────────────────────────────────────────────────────────────┘
-```
+<img width="879" height="684" alt="image" src="https://github.com/user-attachments/assets/0dc6aa73-d7f2-40f8-ac6f-12da614aa936" />
 
 ---
 
