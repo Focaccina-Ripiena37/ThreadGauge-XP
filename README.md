@@ -8,6 +8,8 @@
 
 ---
 
+<img width="982" height="572" alt="image" src="https://github.com/user-attachments/assets/b54df57d-82e0-4806-9229-c34b78f9a8e1" />
+
 ## 📖 Overview
 
 ThreadGauge XP is a lightweight desktop application that helps developers and system administrators understand Java thread behavior, memory consumption, and system limits. Built with **Java 21 LTS** and **Swing**, it features a nostalgic Windows XP-inspired user interface while providing powerful thread analysis capabilities.
